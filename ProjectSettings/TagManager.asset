@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: MapTiles
+    uniqueID: 4280740685
+    locked: 0
+  - name: MapVisibility
+    uniqueID: 3140923429
+    locked: 0

@@ -123,6 +123,7 @@
         </e>
         <e p="Scripts" t="Include">
           <e p="RiderForce.cs" t="Include" />
+          <e p="Tile.cs" t="Include" />
           <e p="TileManager.cs" t="Include" />
         </e>
         <e p="TextMesh Pro" t="Include">
