@@ -70,6 +70,9 @@ public class TileManager : MonoBehaviour
 	/// scaling.
 	protected float originalSize;
 	protected float originalHeight;
+	
+	/// The user's requested size scaling.
+	protected float userScale = 1.0f;
 
 	void Awake() {}
 	
@@ -118,23 +121,65 @@ public class TileManager : MonoBehaviour
 		Test1();
 	}
 	
-	/// This checks if we have resized the window. If so, we rescale the
-	/// orthographic camera so that the same amount of information is shown
-	/// on the screen at all times.
-	/// TODO: Make a version where the information on the screen gets more
+	/// This checks if we have resized the window or want to change our scale.
+	/// The information on the screen gets more
 	/// shown instead, with the relative size of the stuff shown in the
-	/// tile layout remaining (mostly) the same.
+	/// tile layout remaining (mostly) the same based upon the original size.
+	/// 
+	/// Additionally, we check for Command-- and Command-= to scale the screen.
 	void Update () {
-		if (sh != Screen.height || sw != Screen.width) {
+		bool changed = false;
+		
+		if (Input.GetKeyDown(KeyCode.Minus) && Input.GetKey(KeyCode.LeftCommand)) {
+			userScale *= 1.1f;
+			// FIXME: Don't hardcode
+			if (userScale > 3.0) {
+				userScale = 3.0f;
+			}
+			changed = true;
+		}
+
+		if (Input.GetKeyDown(KeyCode.Equals) && Input.GetKey(KeyCode.LeftCommand)) {
+			userScale *= 0.9f;
+			// FIXME: Don't hardcode
+			if (userScale < 0.3) {
+				userScale = 0.3f;
+			}
+			changed = true;
+		}
+		
+		if (Input.GetKeyDown(KeyCode.Alpha0) && Input.GetKey(KeyCode.LeftCommand)) {
+			userScale = 1.0f;
+			changed = true;
+		}
+		
+		if (changed || sh != Screen.height || sw != Screen.width) {
 			sh = Screen.height;
 			sw = Screen.width;
-			// We want the orthographicSize to be 6 when the game is in a
-			// 1024x768 window, so we scale it to the width.
-			float os = (float)sh / originalHeight * originalSize;
-			mainCamera.GetComponent<Camera>().orthographicSize = os; 
-			Debug.Log("Resizing screen to: " + sw + "x" + sh);
+			
+			// This scaling shows the same amount of stuff on the
+			// screen, vertically, regardless of the resizing of the
+			// window.
+			float os =  originalSize * (float)sh / (float)originalHeight;
+			
+			// This scaling shows the same size of stuff on the screen,
+			// vertically, regardless of the resizing of the window, so
+			// bigger windows show more stuff.
+			// DOES NOT WORK
+			///// float os = originalSize * (float)originalHeight / (float)sh;
+			
+			///// float os = originalSize;
+
+			// TODO: Consider also scaling by EditorGUIUtility.pixelsPerPoint,
+			// to compensate for Retina and other scaled displays?
+			
+			mainCamera.GetComponent<Camera>().orthographicSize = os * userScale; 
+			Debug.Log("Resizing screen to: " + sw + "x" + sh + " with scale " + userScale);
 		}
-	}
+	} // Update
+	
+	
+	
 	/// Initializes all the tiles to a specific (game) grid size.
 	/// Tiles are displayed with 0,0 at the top left, with increasing
 	/// indexes going right and down.
