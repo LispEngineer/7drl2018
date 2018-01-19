@@ -3,10 +3,191 @@
   <component name="ContentModelStore">
     <e p="$PROJECT_DIR$" t="IncludeRecursive">
       <e p="7drl2018.sln" t="IncludeFlat" />
+      <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="Arcadia" t="Include">
+          <e p="Components" t="Include">
+            <e p="ArcadiaBehaviour.cs" t="Include" />
+            <e p="ArcadiaState.cs" t="Include" />
+            <e p="AwakeHook.cs" t="Include" />
+            <e p="FixedUpdateHook.cs" t="Include" />
+            <e p="LateUpdateHook.cs" t="Include" />
+            <e p="OnAnimatorIKHook.cs" t="Include" />
+            <e p="OnAnimatorMoveHook.cs" t="Include" />
+            <e p="OnApplicationFocusHook.cs" t="Include" />
+            <e p="OnApplicationPauseHook.cs" t="Include" />
+            <e p="OnApplicationQuitHook.cs" t="Include" />
+            <e p="OnAudioFilterReadHook.cs" t="Include" />
+            <e p="OnBecameInvisibleHook.cs" t="Include" />
+            <e p="OnBecameVisibleHook.cs" t="Include" />
+            <e p="OnBeginDragHook.cs" t="Include" />
+            <e p="OnCancelHook.cs" t="Include" />
+            <e p="OnCollisionEnter2DHook.cs" t="Include" />
+            <e p="OnCollisionEnterHook.cs" t="Include" />
+            <e p="OnCollisionExit2DHook.cs" t="Include" />
+            <e p="OnCollisionExitHook.cs" t="Include" />
+            <e p="OnCollisionStay2DHook.cs" t="Include" />
+            <e p="OnCollisionStayHook.cs" t="Include" />
+            <e p="OnConnectedToServerHook.cs" t="Include" />
+            <e p="OnControllerColliderHitHook.cs" t="Include" />
+            <e p="OnDeselectHook.cs" t="Include" />
+            <e p="OnDestroyHook.cs" t="Include" />
+            <e p="OnDisableHook.cs" t="Include" />
+            <e p="OnDisconnectedFromServerHook.cs" t="Include" />
+            <e p="OnDragHook.cs" t="Include" />
+            <e p="OnDrawGizmosHook.cs" t="Include" />
+            <e p="OnDrawGizmosSelectedHook.cs" t="Include" />
+            <e p="OnDropHook.cs" t="Include" />
+            <e p="OnEnableHook.cs" t="Include" />
+            <e p="OnEndDragHook.cs" t="Include" />
+            <e p="OnFailedToConnectHook.cs" t="Include" />
+            <e p="OnFailedToConnectToMasterServerHook.cs" t="Include" />
+            <e p="OnGUIHook.cs" t="Include" />
+            <e p="OnInitializePotentialDragHook.cs" t="Include" />
+            <e p="OnJointBreakHook.cs" t="Include" />
+            <e p="OnLevelWasLoadedHook.cs" t="Include" />
+            <e p="OnMasterServerEventHook.cs" t="Include" />
+            <e p="OnMouseDownHook.cs" t="Include" />
+            <e p="OnMouseDragHook.cs" t="Include" />
+            <e p="OnMouseEnterHook.cs" t="Include" />
+            <e p="OnMouseExitHook.cs" t="Include" />
+            <e p="OnMouseOverHook.cs" t="Include" />
+            <e p="OnMouseUpAsButtonHook.cs" t="Include" />
+            <e p="OnMouseUpHook.cs" t="Include" />
+            <e p="OnMoveHook.cs" t="Include" />
+            <e p="OnNetworkInstantiateHook.cs" t="Include" />
+            <e p="OnParticleCollisionHook.cs" t="Include" />
+            <e p="OnPlayerConnectedHook.cs" t="Include" />
+            <e p="OnPlayerDisconnectedHook.cs" t="Include" />
+            <e p="OnPointerClickHook.cs" t="Include" />
+            <e p="OnPointerDownHook.cs" t="Include" />
+            <e p="OnPointerEnterHook.cs" t="Include" />
+            <e p="OnPointerExitHook.cs" t="Include" />
+            <e p="OnPointerUpHook.cs" t="Include" />
+            <e p="OnPostRenderHook.cs" t="Include" />
+            <e p="OnPreCullHook.cs" t="Include" />
+            <e p="OnPreRenderHook.cs" t="Include" />
+            <e p="OnRenderImageHook.cs" t="Include" />
+            <e p="OnRenderObjectHook.cs" t="Include" />
+            <e p="OnScrollHook.cs" t="Include" />
+            <e p="OnSelectHook.cs" t="Include" />
+            <e p="OnSerializeNetworkViewHook.cs" t="Include" />
+            <e p="OnServerInitializedHook.cs" t="Include" />
+            <e p="OnSubmitHook.cs" t="Include" />
+            <e p="OnTriggerEnter2DHook.cs" t="Include" />
+            <e p="OnTriggerEnterHook.cs" t="Include" />
+            <e p="OnTriggerExit2DHook.cs" t="Include" />
+            <e p="OnTriggerExitHook.cs" t="Include" />
+            <e p="OnTriggerStay2DHook.cs" t="Include" />
+            <e p="OnTriggerStayHook.cs" t="Include" />
+            <e p="OnUpdateSelectedHook.cs" t="Include" />
+            <e p="OnValidateHook.cs" t="Include" />
+            <e p="OnWillRenderObjectHook.cs" t="Include" />
+            <e p="ResetHook.cs" t="Include" />
+            <e p="StartHook.cs" t="Include" />
+            <e p="UpdateHook.cs" t="Include" />
+          </e>
+          <e p="Editor" t="Include">
+            <e p="ArcadiaProjectInitialization.cs" t="Include" />
+            <e p="AssetPostprocessor.cs" t="Include" />
+            <e p="BuildPipeline.cs" t="Include" />
+            <e p="Configuration.cs" t="Include" />
+            <e p="CustomEditorInspectors.cs" t="Include" />
+            <e p="EditorCallbacks.cs" t="Include" />
+            <e p="Initialization.cs" t="Include" />
+            <e p="Repl.cs" t="Include" />
+          </e>
+          <e p="Helpers" t="Include">
+            <e p="ArrayHelper.cs" t="Include" />
+            <e p="DefmutableDictionary.cs" t="Include" />
+            <e p="HookStateSystem.cs" t="Include" />
+            <e p="JumpMap.cs" t="Include" />
+            <e p="LinearHelper.cs" t="Include" />
+            <e p="StringHelper.cs" t="Include" />
+            <e p="TimeSnap.cs" t="Include" />
+            <e p="UnityStatusHelper.cs" t="Include" />
+            <e p="Util.cs" t="Include" />
+          </e>
+          <e p="Infrastructure" t="Include">
+            <e p="certdata.txt" t="Include" />
+          </e>
+        </e>
+        <e p="Plugins" t="Include">
+          <e p="Editor" t="Include">
+            <e p="JetBrains" t="Include">
+              <e p="Unity3DRider.cs" t="Include" />
+            </e>
+          </e>
+        </e>
         <e p="Scripts" t="Include">
           <e p="RiderForce.cs" t="Include" />
+          <e p="TileManager.cs" t="Include" />
+        </e>
+        <e p="TextMesh Pro" t="Include">
+          <e p="Examples &amp; Extras" t="Include">
+            <e p="Fonts" t="Include">
+              <e p="Anton OFL.txt" t="Include" />
+              <e p="Bangers - OFL.txt" t="Include" />
+              <e p="LiberationSans - OFL.txt" t="Include" />
+              <e p="NotoSans - License.txt" t="Include" />
+              <e p="Oswald Bold - OFL.txt" t="Include" />
+            </e>
+            <e p="Scripts" t="Include">
+              <e p="Benchmark01.cs" t="Include" />
+              <e p="Benchmark01_UGUI.cs" t="Include" />
+              <e p="Benchmark02.cs" t="Include" />
+              <e p="Benchmark03.cs" t="Include" />
+              <e p="Benchmark04.cs" t="Include" />
+              <e p="CameraController.cs" t="Include" />
+              <e p="ChatController.cs" t="Include" />
+              <e p="EnvMapAnimator.cs" t="Include" />
+              <e p="ObjectSpin.cs" t="Include" />
+              <e p="ShaderPropAnimator.cs" t="Include" />
+              <e p="SimpleScript.cs" t="Include" />
+              <e p="SkewTextExample.cs" t="Include" />
+              <e p="TeleType.cs" t="Include" />
+              <e p="TextConsoleSimulator.cs" t="Include" />
+              <e p="TextMeshProFloatingText.cs" t="Include" />
+              <e p="TextMeshSpawner.cs" t="Include" />
+              <e p="TMP_DigitValidator.cs" t="Include" />
+              <e p="TMP_ExampleScript_01.cs" t="Include" />
+              <e p="TMP_FrameRateCounter.cs" t="Include" />
+              <e p="TMP_TextEventCheck.cs" t="Include" />
+              <e p="TMP_TextEventHandler.cs" t="Include" />
+              <e p="TMP_TextInfoDebugTool.cs" t="Include" />
+              <e p="TMP_TextSelector_A.cs" t="Include" />
+              <e p="TMP_TextSelector_B.cs" t="Include" />
+              <e p="TMP_UiFrameRateCounter.cs" t="Include" />
+              <e p="TMPro_InstructionOverlay.cs" t="Include" />
+              <e p="VertexColorCycler.cs" t="Include" />
+              <e p="VertexJitter.cs" t="Include" />
+              <e p="VertexShakeA.cs" t="Include" />
+              <e p="VertexShakeB.cs" t="Include" />
+              <e p="VertexZoom.cs" t="Include" />
+              <e p="WarpTextExample.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Resources" t="Include">
+            <e p="LineBreaking Following Characters.txt" t="Include" />
+            <e p="LineBreaking Leading Characters.txt" t="Include" />
+            <e p="Shaders" t="Include">
+              <e p="TMP_Bitmap-Mobile.shader" t="Include" />
+              <e p="TMP_Bitmap.shader" t="Include" />
+              <e p="TMP_SDF Overlay.shader" t="Include" />
+              <e p="TMP_SDF-Mobile Masking.shader" t="Include" />
+              <e p="TMP_SDF-Mobile Overlay.shader" t="Include" />
+              <e p="TMP_SDF-Mobile.shader" t="Include" />
+              <e p="TMP_SDF-Surface-Mobile.shader" t="Include" />
+              <e p="TMP_SDF-Surface.shader" t="Include" />
+              <e p="TMP_SDF.shader" t="Include" />
+              <e p="TMP_Sprite.shader" t="Include" />
+              <e p="TMPro.cginc" t="Include" />
+              <e p="TMPro_Properties.cginc" t="Include" />
+              <e p="TMPro_Surface.cginc" t="Include" />
+            </e>
+          </e>
         </e>
       </e>
       <e p="Library" t="ExcludeRecursive" />

@@ -10,3 +10,7 @@ TextMesh Pro
 RLTiles https://github.com/statico/rltiles
 
 Clone from git with: git clone --recursive ...
+
+
+Game logic in Clojure.
+Display logic in C#.
