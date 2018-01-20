@@ -123,6 +123,7 @@
         </e>
         <e p="Scripts" t="Include">
           <e p="RiderForce.cs" t="Include" />
+          <e p="TestTileManager.cs" t="Include" />
           <e p="Tile.cs" t="Include" />
           <e p="TileManager.cs" t="Include" />
         </e>
@@ -198,6 +199,6 @@
         <e p="bin" t="ExcludeRecursive" />
       </e>
     </e>
-    <e p="$USER_HOME$/Library/Caches/Rider2017.3/resharper-host/local/Transient/ReSharperHost/v11/SolutionCaches/_7drl2018.-875118661.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/Rider2017.3/resharper-host/local/Transient/ReSharperHost/v11/SolutionCaches/_7drl2018.1768975854.00" t="ExcludeRecursive" />
   </component>
 </project>

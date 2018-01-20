@@ -36,8 +36,7 @@ using UnityEngine;
 /// Each tile is a GameObject with a Tile component, which
 /// itself consists of a hierarchy of components.
 /// </summary>
-public class TileManager : MonoBehaviour
-{
+public class TileManager : MonoBehaviour {
 	
 	/// Our camera, for moving it appropriately over the player
 	public GameObject mainCamera;
@@ -60,11 +59,20 @@ public class TileManager : MonoBehaviour
 	/// also contains a sprite from the allSprites,
 	/// so we can discern the size of a tile layer.
 	public GameObject layerPrefab;
+
+	//////////////////////////////////////////////////////////////
 	
+	/// The tiles that we're managing.
 	protected Tile[,] tiles; 
 	
 	/// Track the resolution so we can redraw if needed.
 	protected int sh, sw;
+	
+	/// Which tile the camera is currently looking at
+	protected int cameraX, cameraY;
+	
+	/// The tile size in Unity game-space
+	protected float sizeX, sizeY;
 	
 	/// The starting orthographic size of the camera for later
 	/// scaling.
@@ -73,52 +81,17 @@ public class TileManager : MonoBehaviour
 	
 	/// The user's requested size scaling.
 	protected float userScale = 1.0f;
+	
+	/////////////////////////////////////////////////////////////////////
+	/// Unity interface
 
 	void Awake() {}
-	
-	/// Throws an ArgumentOutOfRangeException if the indexes to
-	/// tiles is not valid
-	private void CheckTileIndexes(int x, int y) {
-		if (tiles == null) {
-			throw new ArgumentOutOfRangeException("Not yet initialized");
-		}
-		if (x >= tiles.GetLength(0) ||
-		    y >= tiles.GetLength(1)) {
-			throw new ArgumentOutOfRangeException(x + "x" + y +
-			                                      " is outside the initialized size");
-		}
-	}
-	
-	/// For convenience, allow indexing the TileManager to get direct access
-	/// to the (Initialized) tiles.
-	public Tile this[int x, int y] {
-		get {
-			CheckTileIndexes(x, y);
-			return tiles[x, y];
-		}
-		// We probably shouldn't allow public access to the setter.
-		protected set {
-			CheckTileIndexes(x, y);
-			tiles[x, y] = value;
-		}
-	} // Indexer to the tiles
-	
-	/// Returns one of the predefined sprites by their ID (index into the
-	/// array of sprites), or the blank sprite if not valid.
-	public Sprite GetSpriteByID(int spriteID) {
-		if (spriteID < 0 || spriteID >= allSprites.Length) {
-			Debug.LogWarning("Invalid spriteID: " + spriteID);
-			return blankSprite;
-		}
-		return allSprites[spriteID];
-	} // GetSpriteByID
 	
 	// Use this for initialization
 	void Start () {
 		sw = Screen.width;
 		originalHeight = sh = Screen.height;
 		originalSize = mainCamera.GetComponent<Camera>().orthographicSize;
-		Test1();
 	}
 	
 	/// This checks if we have resized the window or want to change our scale.
@@ -179,6 +152,72 @@ public class TileManager : MonoBehaviour
 	} // Update
 	
 	
+	/////////////////////////////////////////////////////////////////////
+	/// Accessors/Mutators
+	
+	/// Throws an ArgumentOutOfRangeException if the indexes to
+	/// tiles is not valid
+	private void CheckTileIndexes(int x, int y) {
+		if (tiles == null) {
+			throw new ArgumentOutOfRangeException("Not yet initialized");
+		}
+		if (x >= tiles.GetLength(0) ||
+		    y >= tiles.GetLength(1)) {
+			throw new ArgumentOutOfRangeException(x + "x" + y +
+			                                      " is outside the initialized size");
+		}
+	}
+	
+	/// Returns the width of the Initialized tiles we're storing
+	public int TileWidth {
+		get {
+		    if (tiles == null) { return 0; }
+			return tiles.GetLength(0);
+		}
+	}
+	
+	/// Returns the height of the Initialized tiles we're storing
+	public int TileHeight {
+		get {
+			if (tiles == null) { return 0; }
+			return tiles.GetLength(1);
+		}
+	}
+	
+	/// Which Tile the camera is looking at
+	public int CameraX { get { return cameraX; } }
+	/// Which Tile the camera is looking at
+	public int CameraY { get { return cameraY; } }
+	/// Which Tile the camera is looking at
+	public Vector2Int CameraXY { get { return new Vector2Int(CameraX, CameraY); } }
+	
+	/// For convenience, allow indexing the TileManager to get direct access
+	/// to the (Initialized) tiles.
+	/// Use [x, y]
+	public Tile this[int x, int y] {
+		get {
+			CheckTileIndexes(x, y);
+			return tiles[x, y];
+		}
+		// We probably shouldn't allow public access to the setter.
+		protected set {
+			CheckTileIndexes(x, y);
+			tiles[x, y] = value;
+		}
+	} // Indexer to the tiles
+	
+	//////////////////////////////////////////////////////////////
+	// TileManager APIs
+	
+	/// Returns one of the predefined sprites by their ID (index into the
+	/// array of sprites), or the blank sprite if not valid.
+	public Sprite GetSpriteByID(int spriteID) {
+		if (spriteID < 0 || spriteID >= allSprites.Length) {
+			Debug.LogWarning("Invalid spriteID: " + spriteID);
+			return blankSprite;
+		}
+		return allSprites[spriteID];
+	} // GetSpriteByID
 	
 	/// Initializes all the tiles to a specific (game) grid size.
 	/// Tiles are displayed with 0,0 at the top left, with increasing
@@ -198,8 +237,8 @@ public class TileManager : MonoBehaviour
 
 		// Calculate the size of our tiles in Unity-coordinates
 		Renderer str = layerPrefab.GetComponentInChildren<Renderer>();
-		float sizeX = str.bounds.max.x - str.bounds.min.x;
-		float sizeY = str.bounds.max.y - str.bounds.min.y;
+		sizeX = str.bounds.max.x - str.bounds.min.x;
+		sizeY = str.bounds.max.y - str.bounds.min.y;
 		Vector3 p;
 		
 		// Create all our tiles and position them properly
@@ -223,93 +262,33 @@ public class TileManager : MonoBehaviour
 		// Position the camera over the center-ish tile
 		int cx = w / 2;
 		int cy = h / 2;
-		p = mainCamera.transform.position;
-		
-		p.x = tiles[cx, cy].transform.position.x + sizeX / 2;
-		p.y = tiles[cx, cy].transform.position.y - sizeY / 2;
-		mainCamera.transform.position = p;
+		LookAt(cx, cy);
 	} // Initialize
-		
 	
-	// Tests initialization and setting up of tiles
-	protected void Test1() {
-		int ns = allSprites.Length;
-		int s = 0;
-		const int increment = 37; // Nice prime number
-		int size = (int)Math.Floor(Math.Sqrt(ns)) * 2;
-		
-		Initialize(size, size);
-		
-		for (int x = 0; x < size; x++) {
-			for (int y = 0; y < size; y++) {
-				tiles[x, y].SetLayers(new int[] { s, (s + 1) % ns }, new bool[] { true }, Tile.Visibility.VISIBLE);
-				// Put a different sprite in the next one
-				s = (s + increment) % ns;
-			}
+	
+	/// Tells the camera to look at the specified tile.
+	/// <returns>false if the tile doesn't exist.</returns>
+	public bool LookAt(int x, int y) {
+		if (tiles == null) {
+			Debug.LogError("tiles is null?");
+			return false;
 		}
-	} // Test1
-	
-	
-	/// Creates all the tile objects that will fit on the screen.
-	public void OLD_SetupTiles() {
-		Vector3 z0;
-		Renderer rend;
-		float width;
-		float height;
-		
-		// First, clear all our tiles
-		foreach (Transform child in tileContainer.transform) {
-			Destroy(child.gameObject);
+		if (x < 0 || y < 0 ||
+		    x >= tiles.GetLength(0) || y >= tiles.GetLength(1)) {
+			Debug.LogWarning("x,y out of bounds: " + x + "," + y +
+			                 " - bounds " + tiles.GetLength(0) + "," +
+			                 tiles.GetLength(1));
+			return false;
 		}
+
+		Vector3 p = mainCamera.transform.position;
 		
-		// Create the first and put it at the top left of the screen at z-layer 0
-		GameObject newTile = Instantiate(tilePrefab);
-		newTile.transform.parent = tileContainer.transform;
-		newTile.name = "0,0";
-		z0 = Camera.main.ViewportToWorldPoint(new Vector3(0,1,0));
-		z0.z = 0;
-		newTile.transform.position = z0; 
-		newTile.SetActive(true);
-		rend = newTile.GetComponent<Renderer>();
-		width = rend.bounds.max.x - rend.bounds.min.x;
-		height = rend.bounds.max.y - rend.bounds.min.y;
+		p.x = tiles[x, y].transform.position.x + sizeX / 2;
+		p.y = tiles[x, y].transform.position.y - sizeY / 2;
+		mainCamera.transform.position = p;
+		cameraX = x;
+		cameraY = y;
+		return true;
+	} // LookAt()
 		
-		// Make the last tile, in the bottom right
-		GameObject lastTile = Instantiate(tilePrefab);
-		lastTile.transform.parent = tileContainer.transform;
-		lastTile.name = "Last";
-		z0 = Camera.main.ViewportToWorldPoint(new Vector3(1,0,0));
-		z0.z = 0;
-		z0.x -= width;
-		z0.y += height;
-		lastTile.transform.position = z0; 
-		lastTile.SetActive(true);
-		
-		// Create all the tiles in between
-		int xi, yi = 0;
-		for (float y = newTile.transform.position.y; 
-			y > lastTile.transform.position.y; 
-			y -= height, yi += 1) {
-			
-			xi = 0;
-			for (float x = newTile.transform.position.x; 
-				x < lastTile.transform.position.x; 
-				x += width, xi += 1) {
-				
-				GameObject t = Instantiate(tilePrefab);
-				t.transform.parent = tileContainer.transform;
-				t.name = String.Format("{0},{1}", xi, yi); // boxing
-				z0.z = 0;
-				z0.x = x;
-				z0.y = y;
-				t.transform.position = z0; 
-				t.SetActive(true);
-			}
-		}
-			
-		// And get rid of our temporary first and last tile
-		Destroy(lastTile);
-		Destroy(newTile);
-	}
-	
 }
