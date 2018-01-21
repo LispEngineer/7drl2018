@@ -49,6 +49,10 @@ Unity for game engine.
 * If the standalone build's GUI looks all pink,
   [reset the project graphics settings](https://forum.unity.com/threads/everything-canvas-turns-pink-when-playing-windows-build.411603/).
 
+* Unity 2018.1.0b3 is very unstable with Arcadia installed. I temporarily
+  deleted it from my local copy and things run much faster and don't seem
+  to crash. (macOS 10.12 w/ current 13" MBP) I should test it with 2017.3
+  and see if that helps.
 
 
 # Copyright & License
