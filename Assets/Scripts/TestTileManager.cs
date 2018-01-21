@@ -1,4 +1,4 @@
-﻿// Copyright © 2008 Douglas P. Fields, Jr. All Rights Reserved.
+﻿// Copyright © 2018 Douglas P. Fields, Jr. All Rights Reserved.
 // symbolics@lisp.engineer
 // https://symbolics.lisp.engineer/
 // Twitter @LispEngineer
@@ -13,7 +13,9 @@ public class TestTileManager : MonoBehaviour {
 
 	/// The TileManager to run our test code in.
 	public TileManager tileMgr;
-	// Tests initialization and setting up of tiles
+	
+	/// Our text scroller
+	public TextScrollManager messageLog;
 	
 	/// Calls our Test setup routine.
 	public void Awake() {
@@ -40,6 +42,8 @@ public class TestTileManager : MonoBehaviour {
 			// This will clamp and ignore out-of-bounds calls.
 			tileMgr.LookAt(tileMgr.CameraX + dx,
 						   tileMgr.CameraY + dy);
+		
+			messageLog.AddText("Moving: " + dx + "," + dy);
 		}
 	} // Update
 	

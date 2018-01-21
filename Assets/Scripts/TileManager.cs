@@ -1,4 +1,4 @@
-﻿// Copyright © 2008 Douglas P. Fields, Jr. All Rights Reserved.
+﻿// Copyright © 2018 Douglas P. Fields, Jr. All Rights Reserved.
 // symbolics@lisp.engineer
 // https://symbolics.lisp.engineer/
 // Twitter @LispEngineer

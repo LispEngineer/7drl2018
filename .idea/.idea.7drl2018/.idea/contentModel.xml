@@ -15,6 +15,7 @@
         </e>
         <e p="Scripts" t="Include">
           <e p="TestTileManager.cs" t="Include" />
+          <e p="TextScrollManager.cs" t="Include" />
           <e p="Tile.cs" t="Include" />
           <e p="TileManager.cs" t="Include" />
           <e p="UIManager.cs" t="Include" />
