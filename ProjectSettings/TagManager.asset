@@ -47,3 +47,6 @@ TagManager:
   - name: MapVisibility
     uniqueID: 3140923429
     locked: 0
+  - name: UI-Canvas
+    uniqueID: 4201620349
+    locked: 0
