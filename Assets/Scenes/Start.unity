@@ -4066,6 +4066,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1401586564}
   canvasScaler: {fileID: 1401586566}
+  messageBox: {fileID: 1277709666}
 --- !u!1 &1496757792
 GameObject:
   m_ObjectHideFlags: 0

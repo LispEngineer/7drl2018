@@ -71,7 +71,7 @@ public class TextScrollManager : MonoBehaviour {
     }
     
     /// Scrolls message log to the bottom. ONLY!
-    protected void ScrollToBottom() {
+    public void ScrollToBottom() {
         // Then scroll the parent ScrollRect to the bottom
         Canvas.ForceUpdateCanvases();
         mlsr.verticalNormalizedPosition = 0.0f;

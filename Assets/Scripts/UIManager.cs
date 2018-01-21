@@ -19,9 +19,22 @@ public class UIManager : MonoBehaviour {
     /// And its scaler
     public CanvasScaler canvasScaler;
     
+    /// The Message Box, which can be opened or closed.
+    public GameObject messageBox;
+    
+    /// The optional Text Scroll Manager, for scrolling text box
+    /// when opened/closed.
+    public TextScrollManager messageLog;
+    
+    /// The starting vertical size of the messageBox, which is
+    /// used when the messageBox is closed.
+    protected float mbClosedHeight;
+    
+    /// Is the message box open or closed?
+    protected bool mbIsClosed;
+    
     /// The default UI scaling factor we're using.
     protected float defaultScale;
-    
     
     ///////////////////////////////////////////////////////////
     // Unity Interface
@@ -34,10 +47,47 @@ public class UIManager : MonoBehaviour {
             defaultScale *= 2.0f;
             canvasScaler.scaleFactor = defaultScale;
         }
+        
+        // Get the height of the box
+        RectTransform rt = (RectTransform)messageBox.transform;
+        Vector2 s = rt.sizeDelta;
+        mbClosedHeight = s.y;
+        mbIsClosed = true; // We start closed
     }
 
-    /// Handle scaling of the UI with Command-Shift- dash/equals/0
     public void Update() {
+        HandleUIScaling();
+        HandleMessageBox();
+    }
+    
+    /// Handles the opening/closing of the message box, and keyboard
+    /// scrolling thereto.
+    public void HandleMessageBox() {
+        if (Input.GetKeyDown(KeyCode.BackQuote)) {
+            if (mbIsClosed) {
+                // Open
+                // Get the height of the canvas
+                Vector2 canvasSize = ((RectTransform)canvas.transform).sizeDelta;
+                Vector2 mbSize = ((RectTransform)messageBox.transform).sizeDelta;
+                
+                mbSize.y = canvasSize.y - mbClosedHeight;
+                ((RectTransform)messageBox.transform).sizeDelta = mbSize;
+            } else {
+                // Close
+                Vector2 mbSize = ((RectTransform)messageBox.transform).sizeDelta;
+                
+                mbSize.y = mbClosedHeight;
+                ((RectTransform)messageBox.transform).sizeDelta = mbSize;
+            }
+            mbIsClosed = !mbIsClosed;
+            if (messageLog != null) {
+                messageLog.ScrollToBottom();
+            }
+        }
+    } // HandleMessageBox();
+    
+    /// Handle scaling of the UI with Command-Shift- dash/equals/0
+    public void HandleUIScaling() {
         if (Input.GetKeyDown(KeyCode.Equals) && 
             Input.GetKey(KeyCode.LeftCommand) &&
             Input.GetKey(KeyCode.LeftShift)) {
@@ -62,7 +112,7 @@ public class UIManager : MonoBehaviour {
             Input.GetKey(KeyCode.LeftShift)) {
             canvasScaler.scaleFactor = defaultScale;
         }
-    } // Update()
+    } // HandleUIScaling()
     
    
 }
