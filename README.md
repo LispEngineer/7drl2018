@@ -27,6 +27,30 @@ Unity for game engine.
   * Email: symbolics@lisp.engineer
 
 
+# How To Play
+
+* UI Management:
+  * Zoom the playfield: `Command-=`, `Command--` and `Command-0`
+  * Zoom the UI: Add `Shift` to the above
+  * (Use left modifiers for now. Windows not tested.)
+* Movement:
+  * VI Keys: `HJKL` for orthogonal, and `YUBN` for diagonal
+
+
+# Current State
+
+* Draws a series of (stacked) tiles in the playfield
+* Moves the camera around with movement keys
+* Zooms the playfield and UI independently
+
+
+# Unity Notes
+
+* If the standalone build's GUI looks all pink,
+  [reset the project graphics settings](https://forum.unity.com/threads/everything-canvas-turns-pink-when-playing-windows-build.411603/).
+
+
+
 # Copyright & License
 
 Copyright 2018 Douglas P. Fields, Jr.

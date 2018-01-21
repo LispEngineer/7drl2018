@@ -103,7 +103,9 @@ public class TileManager : MonoBehaviour {
 	void Update () {
 		bool changed = false;
 		
-		if (Input.GetKeyDown(KeyCode.Minus) && Input.GetKey(KeyCode.LeftCommand)) {
+		if (Input.GetKeyDown(KeyCode.Minus) && 
+		    Input.GetKey(KeyCode.LeftCommand) &&
+		    !Input.GetKey(KeyCode.LeftShift)) {
 			userScale *= 1.1f;
 			// FIXME: Don't hardcode
 			if (userScale > 3.0) {
@@ -112,7 +114,8 @@ public class TileManager : MonoBehaviour {
 			changed = true;
 		}
 
-		if (Input.GetKeyDown(KeyCode.Equals) && Input.GetKey(KeyCode.LeftCommand)) {
+		if (Input.GetKeyDown(KeyCode.Equals) && Input.GetKey(KeyCode.LeftCommand) &&
+		    !Input.GetKey(KeyCode.LeftShift)) {
 			userScale *= 0.9f;
 			// FIXME: Don't hardcode
 			if (userScale < 0.3) {
@@ -121,7 +124,8 @@ public class TileManager : MonoBehaviour {
 			changed = true;
 		}
 		
-		if (Input.GetKeyDown(KeyCode.Alpha0) && Input.GetKey(KeyCode.LeftCommand)) {
+		if (Input.GetKeyDown(KeyCode.Alpha0) && Input.GetKey(KeyCode.LeftCommand) &&
+		    !Input.GetKey(KeyCode.LeftShift)) {
 			userScale = 1.0f;
 			changed = true;
 		}
