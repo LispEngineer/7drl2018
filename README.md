@@ -1,7 +1,7 @@
 A Seven Day Roguelike entry for 2018. The actual game will not be built
 until the 7DRL starts. For now, just building a UI framework.
 
-# Dependencies
+# Credits & Dependencies
 
 * Rider 2017.3
 * Unity 2017.3.0f3 (previously 2018.1.0b3)
@@ -9,6 +9,7 @@ until the 7DRL starts. For now, just building a UI framework.
   on commit `653f2bf8224e247f0b78d3ce962b5f76a0e1ff3b`
 * TextMesh Pro
 * [RLTiles](https://github.com/statico/rltiles)
+* [Source Code Pro (font)](https://github.com/adobe-fonts/source-code-pro)
 
 Clone from git with: `git clone --recursive ...` to get Arcadia too.
 

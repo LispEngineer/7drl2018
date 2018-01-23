@@ -3,6 +3,8 @@
 // https://symbolics.lisp.engineer/
 // Twitter @LispEngineer
 
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +27,14 @@ public class UIManager : MonoBehaviour {
     /// The optional Text Scroll Manager, for scrolling text box
     /// when opened/closed.
     public TextScrollManager messageLog;
+    
+    /// The dialog box which can be open and closed.
+    public GameObject dialogBox;
+    
+    /// The text contents of the dialog box.
+    public TextMeshProUGUI dialogText;
+    
+    ////////////////////////////////////////////////////////////
     
     /// The starting vertical size of the messageBox, which is
     /// used when the messageBox is closed.
@@ -63,6 +73,10 @@ public class UIManager : MonoBehaviour {
         // Store our current Screen height for resizing
         lastScreenHeight = Screen.height;
         openMBHeightPct = 1.0f - (float)mbClosedHeight / (float)lastScreenHeight;
+    }
+    
+    public void Start() {
+        GetDialogTextRows();
     }
 
     public void Update() {
@@ -166,8 +180,91 @@ public class UIManager : MonoBehaviour {
             if (messageLog != null) {
                 messageLog.ScrollToBottom();
             }
+            
+            // TODO: Resize the DialogBox to be same portion of screen.
+
+            // TODO: Maybe fire some event if the dialog box is open and
+            // the player resizes things, so it can re-render.
+            
+            // TODO: Do something with this
+            GetDialogTextRows();
         }
     } // HandleUIScaling()
     
+    /// 300 lines of one character string for testing the visible height.
+    private readonly string HEIGHT_TEST_STRING =
+        string.Concat(Enumerable.Repeat("X\n", 300));
+    
+    /// <summary>
+    /// The TextMesh Pro settings should be as follows:
+    /// TODO 
+    /// </summary>
+    /// <returns></returns>
+    public int GetDialogTextRows() {
+        // dialogText.firstOverflowCharacterIndex;
+        string originalText = dialogText.text;
+        int retval;
+        
+        dialogText.text = HEIGHT_TEST_STRING;
+        // Reformat the display - see https://forum.unity.com/threads/linked-text-in-ugui-layout-groups.471477/
+        // Both these calls seem to work - which is more efficient?
+        // dialogText.Rebuild(CanvasUpdate.PreRender);
+        dialogText.ForceMeshUpdate();
+        
+        // TODO: Do something with this
+        Debug.Log("Overflowing? " + dialogText.isTextOverflowing +
+                  ", at: " + dialogText.firstOverflowCharacterIndex);
+        Debug.Log("Truncated? " + dialogText.isTextTruncated);
+        // characterCount seems to count characters even if they have been
+        // truncated from a long line. Disappointing.
+        Debug.Log("Char count: " + dialogText.textInfo.characterCount +
+                  ", line count: " + dialogText.textInfo.lineCount +
+                  ", page count: " + dialogText.textInfo.pageCount);
+        /*
+        Debug.Log("Max vis chars: " + dialogText.maxVisibleCharacters +
+                  ", max vis lines: " + dialogText.maxVisibleLines +
+                  ", max vis words: " + dialogText.maxVisibleWords);
+        */
+        
+        // This works to get the height, but not the width.
+        retval = dialogText.textInfo.lineCount;
+        
+        
+        // TRY to find the line length
+        bool oldWW = dialogText.enableWordWrapping;
+        TextOverflowModes oldTOM = dialogText.overflowMode;
+        
+        dialogText.text = "X";
+        dialogText.enableWordWrapping = true;
+        dialogText.overflowMode = TextOverflowModes.Overflow;
+        
+        int lineWidth = 300;
+        for (int l = 1; l < lineWidth; l++) {
+            dialogText.text = string.Concat(Enumerable.Repeat("X", l));
+            // Mesh update is necessary
+            dialogText.ForceMeshUpdate();
+            /*
+            Debug.Log("Length: " + l +
+                      ", char count: " + dialogText.textInfo.characterCount +
+                      ", line count: " + dialogText.textInfo.lineCount);
+            */
+            if (dialogText.textInfo.lineCount > 1) {
+                lineWidth = l - 1;
+                break;
+            }
+        }
+
+        
+        // Restore everything to the original settings
+        dialogText.text = originalText;
+        dialogText.enableWordWrapping = oldWW;
+        dialogText.overflowMode = oldTOM;
+        // dialogText.Rebuild(CanvasUpdate.PreRender);
+        dialogText.ForceMeshUpdate();
+        
+        Debug.Log("Final text size: width: " + lineWidth + ", height: " + retval);
+        
+        return retval;
+    } // GetDialogTextRows()
    
 }
