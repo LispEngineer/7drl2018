@@ -36,6 +36,12 @@ public class UIManager : MonoBehaviour {
     /// The default UI scaling factor we're using.
     protected float defaultScale;
     
+    /// The screen height, last time we checked
+    protected int lastScreenHeight;
+    
+    /// Open Height Percentage
+    protected float openMBHeightPct;
+    
     ///////////////////////////////////////////////////////////
     // Unity Interface
     
@@ -53,11 +59,43 @@ public class UIManager : MonoBehaviour {
         Vector2 s = rt.sizeDelta;
         mbClosedHeight = s.y;
         mbIsClosed = true; // We start closed
+        
+        // Store our current Screen height for resizing
+        lastScreenHeight = Screen.height;
+        openMBHeightPct = 1.0f - (float)mbClosedHeight / (float)lastScreenHeight;
     }
 
     public void Update() {
         HandleUIScaling();
         HandleMessageBox();
+        HandleUIResizing();
+    }
+    
+    /// If the screen size vertically changes, we re-open an open message box
+    /// to ensure it is sized properly.
+    public void HandleUIResizing() {
+        if (lastScreenHeight != Screen.height) {
+            if (!mbIsClosed) {
+                OpenMessageBox();
+                if (messageLog != null) {
+                    messageLog.ScrollToBottom();
+                }
+            }
+            lastScreenHeight = Screen.height;
+        }
+    } // HandleUIResizing()
+    
+    /// Calculates a "most of the screen" vertical size of the message
+    /// box and sets it to that.
+    public void OpenMessageBox() {
+        // Open
+        // Get the height of the canvas
+        Vector2 canvasSize = ((RectTransform)canvas.transform).sizeDelta;
+        Vector2 mbSize = ((RectTransform)messageBox.transform).sizeDelta;
+                
+        mbSize.y = canvasSize.y * openMBHeightPct;
+        ((RectTransform)messageBox.transform).sizeDelta = mbSize;
+        Debug.Log("mbSize.y = " + mbSize.y);
     }
     
     /// Handles the opening/closing of the message box, and keyboard
@@ -65,13 +103,7 @@ public class UIManager : MonoBehaviour {
     public void HandleMessageBox() {
         if (Input.GetKeyDown(KeyCode.BackQuote)) {
             if (mbIsClosed) {
-                // Open
-                // Get the height of the canvas
-                Vector2 canvasSize = ((RectTransform)canvas.transform).sizeDelta;
-                Vector2 mbSize = ((RectTransform)messageBox.transform).sizeDelta;
-                
-                mbSize.y = canvasSize.y - mbClosedHeight;
-                ((RectTransform)messageBox.transform).sizeDelta = mbSize;
+                OpenMessageBox();
             } else {
                 // Close
                 Vector2 mbSize = ((RectTransform)messageBox.transform).sizeDelta;
@@ -84,10 +116,12 @@ public class UIManager : MonoBehaviour {
                 messageLog.ScrollToBottom();
             }
         }
-    } // HandleMessageBox();
+    } // HandleMessageBox()
     
     /// Handle scaling of the UI with Command-Shift- dash/equals/0
     public void HandleUIScaling() {
+        bool changed = false;
+        
         if (Input.GetKeyDown(KeyCode.Equals) && 
             Input.GetKey(KeyCode.LeftCommand) &&
             Input.GetKey(KeyCode.LeftShift)) {
@@ -96,6 +130,7 @@ public class UIManager : MonoBehaviour {
             if (canvasScaler.scaleFactor > 3.0f * defaultScale) {
                 canvasScaler.scaleFactor = 3.0f * defaultScale;
             }
+            changed = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Minus) && 
@@ -106,11 +141,31 @@ public class UIManager : MonoBehaviour {
             if (canvasScaler.scaleFactor < 0.3f * defaultScale) {
                 canvasScaler.scaleFactor = 0.3f;
             }
+            changed = true;
         }
 		
         if (Input.GetKeyDown(KeyCode.Alpha0) && Input.GetKey(KeyCode.LeftCommand) &&
             Input.GetKey(KeyCode.LeftShift)) {
             canvasScaler.scaleFactor = defaultScale;
+            changed = true;
+        }
+
+        if (changed) {
+            // Force the updates so our calculations of sizes use the
+            // current canvasScaler settings...
+            // Note that Canvas.ForceUpdateCanvases() does not scale the
+            // canvas, which apparently only happens at Update() on the
+            // Canvas Scaler
+            canvasScaler.SendMessage("Update");
+
+            if (!mbIsClosed) {
+                // Resize an open message box upon rescale
+                OpenMessageBox();
+            }
+            // And scroll contents to the bottom.
+            if (messageLog != null) {
+                messageLog.ScrollToBottom();
+            }
         }
     } // HandleUIScaling()
     
