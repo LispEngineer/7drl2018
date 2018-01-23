@@ -1,18 +1,22 @@
 # To-do Items
 
-* Make the text message log work nicely:
-  * Scroll with mouse wheel (or by keyboard command of course) - DONE
-  * Add text to the bottom and auto-scroll to the bottom - DONE
-  * Auto-remove text from the top - DONE
-  * Make it so it can be resized/xpandable vertically to show more or less
-    as the user desires - DONE
-
 * Build out the TileManager test better:
   * Make a player icon and move it around the map
   * Test the unseen/seen/visible functionality
   * Allow modifier-movement keys to move the camera independently of
     the player moving. Move the camera back to the player on any
     unmodified movement keypress
+
+
+# Done Items
+
+* Make the text message log work nicely: - DONE
+  * Scroll with mouse wheel (or by keyboard command of course) - DONE
+  * Add text to the bottom and auto-scroll to the bottom - DONE
+  * Auto-remove text from the top - DONE
+  * Make it so it can be resized/xpandable vertically to show more or less
+    as the user desires - DONE
+
 
 
 # Credits

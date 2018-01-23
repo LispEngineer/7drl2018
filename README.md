@@ -4,9 +4,9 @@ until the 7DRL starts. For now, just building a UI framework.
 # Dependencies
 
 * Rider 2017.3
-* Unity 2018.1.0b3
-* Arcadia: git submodule add https://github.com/arcadia-unity/Arcadia.git Arcadia
-  on commit 653f2bf8224e247f0b78d3ce962b5f76a0e1ff3b
+* Unity 2017.3.0f3 (previously 2018.1.0b3)
+* Arcadia: `git submodule add https://github.com/arcadia-unity/Arcadia.git Arcadia`
+  on commit `653f2bf8224e247f0b78d3ce962b5f76a0e1ff3b`
 * TextMesh Pro
 * [RLTiles](https://github.com/statico/rltiles)
 
@@ -55,6 +55,11 @@ Unity for game engine.
   deleted it from my local copy and things run much faster and don't seem
   to crash. (macOS 10.12 w/ current 13" MBP) I should test it with 2017.3
   and see if that helps.
+  
+* `CanvasScaler` does not update when `Canvas.ForceUpdateCanvases()`
+  is called, but only when its `protected Update()` method is called.
+  So, this needs to be called manually (with `SendMessage("Update")`)
+  when necessary.
 
 
 # Copyright & License
