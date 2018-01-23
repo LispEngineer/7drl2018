@@ -109,13 +109,16 @@ public class TestTileManager : MonoBehaviour {
 	/// TODO: Handle paging in the future.
 	public void DrawInventory() {
 		Vector2Int size = uiMgr.dialogTextSize;
-		Boolean selectedWasDisplayed = false;
+		bool selectedWasDisplayed = false;
+	    bool tooSmall = false;
 		
 		string t = "<b><u>Inventory</u></b>";
 		int numPageDigits = 1;
 		
 		// Bold, underlined is rendered wider by Unity/TextMeshPro
-		t += new string(' ', size.x - 9 - numPageDigits - 1 - numPageDigits - 1);
+		if (size.x >= 9 + numPageDigits + 1 + numPageDigits + 1) {
+			t += new string(' ', size.x - 9 - numPageDigits - 1 - numPageDigits - 1);
+		}
 		t += "1/1"; // Page number / number of pages
 		t += "\n";
 		// t += string.Concat(Enumerable.Repeat("1234567890", 10));
@@ -127,20 +130,24 @@ public class TestTileManager : MonoBehaviour {
 		// <inventory>
 		// Blank
 		// Commands
-		for (int l = 0; l < size.y - 4; l++) {
-			if (l < inventory.Length && l < 26) {
-				if (selectedInventoryItem == l) {
-					t += "<mark=#ffff0055>";
-					selectedWasDisplayed = true;
+		if (size.y < 5) {
+			tooSmall = true;
+		} else {
+			for (int l = 0; l < size.y - 4; l++) {
+				if (l < inventory.Length && l < 26) {
+					if (selectedInventoryItem == l) {
+						t += "<mark=#ffff0055>";
+						selectedWasDisplayed = true;
+					}
+					t += (char)('A' + l);
+					t += " - ";
+					t += inventory[l];
+					if (selectedInventoryItem == l) {
+						t += "</mark>";
+					}
 				}
-				t += (char)('A' + l);
-				t += " - ";
-				t += inventory[l];
-				if (selectedInventoryItem == l) {
-					t += "</mark>";
-				}
+				t += "\n";
 			}
-			t += "\n";
 		}
 		
 		// Blank line
@@ -158,8 +165,12 @@ public class TestTileManager : MonoBehaviour {
 		} else {
 			t += "<mark=#ff000055>ESC</mark> - Unselect, <mark=#ff000055>D</mark> - drop, <mark=#ff000055>...</mark>";
 		}
-		
-		uiMgr.dialogBoxText = t;
+
+		if (tooSmall) {
+			uiMgr.dialogBoxText = "<color=red><i>TOO SMALL<i></color>";
+		} else {
+			uiMgr.dialogBoxText = t;
+		}
 	} // DrawInventory()
 	
 	/// Shows a dialog box pretending to be inventory
@@ -180,6 +191,8 @@ public class TestTileManager : MonoBehaviour {
 		if (switchedToInventory) {
 			selectedInventoryItem = -1;
 			uiMgr.dialogBoxOpen = true;
+			// Force refresh of the dialog text size
+			uiMgr.GetDialogTextSize();
 			DrawInventory();
 		}
 		

@@ -7,6 +7,10 @@
     the player moving. Move the camera back to the player on any
     unmodified movement keypress
 
+* Inventory system improvements
+  * Build a pager, such that you can page through long lists of inventory
+  * Have the pager handle window resize nicely
+  * Make the inventory item possible to select by up/down arrows
 
 # Done Items
 
@@ -21,7 +25,7 @@
 
 # Credits
 
-Douglas P. Fields, Jr.
+Copyright © 2018 Douglas P. Fields, Jr.
 * symbolics@lisp.engineer
 * [Home Page](https://symbolics.lisp.engineer/)
 * [GitHub](https://github.com/LispEngineer/)

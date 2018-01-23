@@ -97,8 +97,7 @@ public class UIManager : MonoBehaviour {
         // Store our current Screen height for resizing
         lastScreenHeight = Screen.height;
         openMBHeightPct = 1.0f - (float)mbClosedHeight / (float)lastScreenHeight;
-        
-        
+
         // Determine size of the dialog box for later scaling,
         // and also its text size
         dialogBox.SetActive(true);
@@ -112,14 +111,21 @@ public class UIManager : MonoBehaviour {
         openDBPct.x = oMin.x / Screen.width;
         openDBPct.y = oMin.y / Screen.height;
     }
-    
+
+    /// Initialize our settings for scaling and resizing
     public void Start() {
+        // For whatever reason, the standalone player was not handling the
+        // dialog box size correctly, despite working fine in the Unity player.
+        // Adding this here fixes it.
+        ChangedUISizeScale();
+        
         // We have to initialize this during Start() since it doesn't
         // seem to work during Awake(), which makes sense I guess, since
         // not all the objects are necessarily Awake()ned?
         dialogBoxTextSize = GetDialogTextSize();
     }
 
+    /// UI Scaling, Resizing, etc.
     public void Update() {
         HandleUIScaling();
         HandleMessageBox();
@@ -130,13 +136,8 @@ public class UIManager : MonoBehaviour {
     /// to ensure it is sized properly.
     public void HandleUIResizing() {
         if (lastScreenHeight != Screen.height) {
-            if (!mbIsClosed) {
-                OpenMessageBox();
-                if (messageLog != null) {
-                    messageLog.ScrollToBottom();
-                }
-            }
             lastScreenHeight = Screen.height;
+            ChangedUISizeScale();
         }
     } // HandleUIResizing()
     
@@ -187,6 +188,35 @@ public class UIManager : MonoBehaviour {
         }
     } // HandleMessageBox()
     
+    // Handles what to do when our UI scale or size changes
+    public void ChangedUISizeScale() {
+        // Force the updates so our calculations of sizes use the
+        // current canvasScaler settings...
+        // Note that Canvas.ForceUpdateCanvases() does not scale the
+        // canvas, which apparently only happens at Update() on the
+        // Canvas Scaler
+        canvasScaler.SendMessage("Update");
+
+        if (!mbIsClosed) {
+            // Resize an open message box upon rescale
+            OpenMessageBox();
+        }
+        // And scroll contents to the bottom.
+        if (messageLog != null) {
+            messageLog.ScrollToBottom();
+        }
+            
+        // Resize the DialogBox to be same portion of screen.
+        SetDialogBoxSize();
+        dialogBoxTextSize = GetDialogTextSize();
+            
+        // Fire an event if the dialog box is open and
+        // the player resizes things, so it can re-render.
+        if (dialogBox.active) {
+            dialogSizeChangeListeners.Invoke();
+        }
+    } // ChangedUISizeScale
+    
     /// Handle scaling of the UI with Command-Shift- dash/equals/0
     public void HandleUIScaling() {
         bool changed = false;
@@ -208,7 +238,7 @@ public class UIManager : MonoBehaviour {
             canvasScaler.scaleFactor *= 0.90909f;
             // FIXME: Don't hardcode
             if (canvasScaler.scaleFactor < 0.3f * defaultScale) {
-                canvasScaler.scaleFactor = 0.3f;
+                canvasScaler.scaleFactor = 0.3f * defaultScale;
             }
             changed = true;
         }
@@ -220,31 +250,7 @@ public class UIManager : MonoBehaviour {
         }
 
         if (changed) {
-            // Force the updates so our calculations of sizes use the
-            // current canvasScaler settings...
-            // Note that Canvas.ForceUpdateCanvases() does not scale the
-            // canvas, which apparently only happens at Update() on the
-            // Canvas Scaler
-            canvasScaler.SendMessage("Update");
-
-            if (!mbIsClosed) {
-                // Resize an open message box upon rescale
-                OpenMessageBox();
-            }
-            // And scroll contents to the bottom.
-            if (messageLog != null) {
-                messageLog.ScrollToBottom();
-            }
-            
-            // Resize the DialogBox to be same portion of screen.
-            SetDialogBoxSize();
-            dialogBoxTextSize = GetDialogTextSize();
-            
-            // Fire an event if the dialog box is open and
-            // the player resizes things, so it can re-render.
-            if (dialogBox.active) {
-                dialogSizeChangeListeners.Invoke();
-            }
+            ChangedUISizeScale();
         }
     } // HandleUIScaling()
     
@@ -274,6 +280,7 @@ public class UIManager : MonoBehaviour {
         // Reformat the display - see https://forum.unity.com/threads/linked-text-in-ugui-layout-groups.471477/
         // Both these calls seem to work - which is more efficient?
         // dialogText.Rebuild(CanvasUpdate.PreRender);
+        Canvas.ForceUpdateCanvases();
         dialogText.ForceMeshUpdate();
 
         /*
