@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Test code for the TileManager & UIManager.
@@ -104,8 +106,10 @@ public class TestTileManager : MonoBehaviour {
 	
 	/// Draws the inventory into the dialog box.
 	/// Unity probably loves all these object allocations for string manipulation.
+	/// TODO: Handle paging in the future.
 	public void DrawInventory() {
 		Vector2Int size = uiMgr.dialogTextSize;
+		Boolean selectedWasDisplayed = false;
 		
 		string t = "<b><u>Inventory</u></b>";
 		int numPageDigits = 1;
@@ -127,6 +131,7 @@ public class TestTileManager : MonoBehaviour {
 			if (l < inventory.Length && l < 26) {
 				if (selectedInventoryItem == l) {
 					t += "<mark=#ffff0055>";
+					selectedWasDisplayed = true;
 				}
 				t += (char)('A' + l);
 				t += " - ";
@@ -138,7 +143,15 @@ public class TestTileManager : MonoBehaviour {
 			t += "\n";
 		}
 		
+		// Blank line
 		t += "\n";
+		
+		// If we didn't display the selected one, unselect it.
+		// This only happens if we resize the inventory window while
+		// the dialog is open.
+		if (!selectedWasDisplayed) {
+			selectedInventoryItem = -1;
+		}
 		
 		if (selectedInventoryItem < 0) {
 			t += "<mark=#ff000055>[A-Z]</mark> - Select, <mark=#ff000055>ESC</mark> - Exit";
@@ -185,6 +198,12 @@ public class TestTileManager : MonoBehaviour {
 			}
 		}
 		
+		// TODO: Handle arrow keys to select items and step through
+		// them one at a time (including going between pages)
+		
+		// TODO: Have the ability to page through the inventory,
+		// with PGUP/PGDN or left/right arrows or [] keys?
+		
 		if (selectedInventoryItem < 0) {
 			// Handle keyboard letters for selecting things
 			int letter = LetterKeyDown();
@@ -207,6 +226,13 @@ public class TestTileManager : MonoBehaviour {
 			}
 		}
 	} // CheckDialog
+	
+
+	/// Callback for when the Dialog Box is open and its text size changes.
+	public void DialogSizeChanged() {
+		Debug.Log("Dialog size changed.");
+		DrawInventory();
+	}
 	
 	/// Sets up a lot of random-ish tiles. 
 	protected void Test1() {

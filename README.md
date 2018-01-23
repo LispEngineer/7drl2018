@@ -34,10 +34,13 @@ Unity for game engine.
   * Zoom the playfield: `Command-=`, `Command--` and `Command-0`
   * Zoom the UI: Add `Shift` to the above
   * (Use left modifiers for now. Windows not tested.)
-  * Open/close message log: Backtick/Backquote
+  * Open/close message log: `Backtick`/`Backquote`
   * Scroll message log: Scroll wheel over message log window
 * Movement:
   * VI Keys: `HJKL` for orthogonal, and `YUBN` for diagonal
+* Inventory management:
+  * Open inventory window: `I`
+  * Inventory management keys are shown
 
 
 # Current State

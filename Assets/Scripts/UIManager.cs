@@ -3,9 +3,12 @@
 // https://symbolics.lisp.engineer/
 // Twitter @LispEngineer
 
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -14,6 +17,11 @@ using UnityEngine.UI;
 /// </summary>
 
 public class UIManager : MonoBehaviour {
+    
+    /// Called whenever our dialog box size changes WHILE it's open.
+    public delegate void DialogSizeChange();
+
+    //////////////////////////////////////////////////////////////
 
     /// The Canvas GameObject with all the other components
     public Canvas canvas;
@@ -37,6 +45,11 @@ public class UIManager : MonoBehaviour {
     
     /// The text contents of the dialog box.
     public TextMeshProUGUI dialogText;
+    
+    /// What to do when our open dialog box size changes.
+    [Header("Event Listeners")]
+    public UnityEvent dialogSizeChangeListeners;
+    
     
     ////////////////////////////////////////////////////////////
     
@@ -227,8 +240,11 @@ public class UIManager : MonoBehaviour {
             SetDialogBoxSize();
             dialogBoxTextSize = GetDialogTextSize();
             
-            // TODO: Fire an event if the dialog box is open and
+            // Fire an event if the dialog box is open and
             // the player resizes things, so it can re-render.
+            if (dialogBox.active) {
+                dialogSizeChangeListeners.Invoke();
+            }
         }
     } // HandleUIScaling()
     
