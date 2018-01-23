@@ -31,6 +31,10 @@ public class UIManager : MonoBehaviour {
     /// The dialog box which can be open and closed.
     public GameObject dialogBox;
     
+    /// The interior of the dialog box, which is actually the display area
+    /// which needs to be resized.
+    public GameObject dbInterior;
+    
     /// The text contents of the dialog box.
     public TextMeshProUGUI dialogText;
     
@@ -49,8 +53,15 @@ public class UIManager : MonoBehaviour {
     /// The screen height, last time we checked
     protected int lastScreenHeight;
     
-    /// Open Height Percentage
+    /// Open Height Percentage for Message Box
     protected float openMBHeightPct;
+    
+    /// Open Height/Width percentage for Dialog Box
+    protected Vector2 openDBPct;
+    
+    /// Dialog box size in terms of width, height (x, y) assuming
+    /// monospaced characters.
+    protected Vector2Int dialogBoxTextSize;
     
     ///////////////////////////////////////////////////////////
     // Unity Interface
@@ -73,10 +84,27 @@ public class UIManager : MonoBehaviour {
         // Store our current Screen height for resizing
         lastScreenHeight = Screen.height;
         openMBHeightPct = 1.0f - (float)mbClosedHeight / (float)lastScreenHeight;
+        
+        
+        // Determine size of the dialog box for later scaling,
+        // and also its text size
+        dialogBox.SetActive(true);
+        Canvas.ForceUpdateCanvases();
+        rt = (RectTransform)dbInterior.transform;
+        Vector2 oMin = rt.offsetMin;
+        // We start with DialogBox closed
+        dialogBox.SetActive(false);
+        // FYI: offsetMax is inverted
+        // offsetMax.x = right, but it is NEGATIVE (right 5 shows as -5)
+        openDBPct.x = oMin.x / Screen.width;
+        openDBPct.y = oMin.y / Screen.height;
     }
     
     public void Start() {
-        GetDialogTextRows();
+        // We have to initialize this during Start() since it doesn't
+        // seem to work during Awake(), which makes sense I guess, since
+        // not all the objects are necessarily Awake()ned?
+        dialogBoxTextSize = GetDialogTextSize();
     }
 
     public void Update() {
@@ -110,6 +138,20 @@ public class UIManager : MonoBehaviour {
         mbSize.y = canvasSize.y * openMBHeightPct;
         ((RectTransform)messageBox.transform).sizeDelta = mbSize;
         Debug.Log("mbSize.y = " + mbSize.y);
+    }
+    
+    /// Sets the open dialog box size to the correct portion of the screen,
+    /// based upon the size when the Scene was loaded.
+    public void SetDialogBoxSize() {
+        Vector2 canvasSize = ((RectTransform)canvas.transform).sizeDelta;
+        Vector2 offset;
+        
+        offset.x = canvasSize.x * openDBPct.x;
+        offset.y = canvasSize.y * openDBPct.y;
+        ((RectTransform)dbInterior.transform).offsetMin = offset;
+        offset.x = -offset.x;
+        offset.y = -offset.y;
+        ((RectTransform)dbInterior.transform).offsetMax = offset;
     }
     
     /// Handles the opening/closing of the message box, and keyboard
@@ -181,37 +223,44 @@ public class UIManager : MonoBehaviour {
                 messageLog.ScrollToBottom();
             }
             
-            // TODO: Resize the DialogBox to be same portion of screen.
-
-            // TODO: Maybe fire some event if the dialog box is open and
-            // the player resizes things, so it can re-render.
+            // Resize the DialogBox to be same portion of screen.
+            SetDialogBoxSize();
+            dialogBoxTextSize = GetDialogTextSize();
             
-            // TODO: Do something with this
-            GetDialogTextRows();
+            // TODO: Fire an event if the dialog box is open and
+            // the player resizes things, so it can re-render.
         }
     } // HandleUIScaling()
+    
+    /////////////////////////////////////////////////////////////////
+    // Dialog Box
     
     /// 300 lines of one character string for testing the visible height.
     private readonly string HEIGHT_TEST_STRING =
         string.Concat(Enumerable.Repeat("X\n", 300));
     
     /// <summary>
+    /// This assumes a monospaced font, and will tell you how much will fit in
+    /// each row and column for the TMPUGUI.
+    /// 
     /// The TextMesh Pro settings should be as follows:
-    /// TODO 
+    ///    Wrapping & overflow: (doesn't really matter?) Disabled & truncate
     /// </summary>
-    /// <returns></returns>
-    public int GetDialogTextRows() {
+    /// <returns>(x, y) as (cols, rows) or (width, height)</returns>
+    public Vector2Int GetDialogTextSize() {
         // dialogText.firstOverflowCharacterIndex;
         string originalText = dialogText.text;
-        int retval;
+        int lineHeight;
+        bool oldDBOpen = dialogBox.active;
         
+        dialogBox.SetActive(true);
         dialogText.text = HEIGHT_TEST_STRING;
         // Reformat the display - see https://forum.unity.com/threads/linked-text-in-ugui-layout-groups.471477/
         // Both these calls seem to work - which is more efficient?
         // dialogText.Rebuild(CanvasUpdate.PreRender);
         dialogText.ForceMeshUpdate();
-        
-        // TODO: Do something with this
+
+        /*
         Debug.Log("Overflowing? " + dialogText.isTextOverflowing +
                   ", at: " + dialogText.firstOverflowCharacterIndex);
         Debug.Log("Truncated? " + dialogText.isTextTruncated);
@@ -220,6 +269,7 @@ public class UIManager : MonoBehaviour {
         Debug.Log("Char count: " + dialogText.textInfo.characterCount +
                   ", line count: " + dialogText.textInfo.lineCount +
                   ", page count: " + dialogText.textInfo.pageCount);
+        */
         /*
         Debug.Log("Max vis chars: " + dialogText.maxVisibleCharacters +
                   ", max vis lines: " + dialogText.maxVisibleLines +
@@ -227,8 +277,7 @@ public class UIManager : MonoBehaviour {
         */
         
         // This works to get the height, but not the width.
-        retval = dialogText.textInfo.lineCount;
-        
+        lineHeight = dialogText.textInfo.lineCount;
         
         // TRY to find the line length
         bool oldWW = dialogText.enableWordWrapping;
@@ -254,6 +303,9 @@ public class UIManager : MonoBehaviour {
             }
         }
 
+        if (!oldDBOpen) {
+            dialogBox.SetActive(false);
+        }
         
         // Restore everything to the original settings
         dialogText.text = originalText;
@@ -262,9 +314,24 @@ public class UIManager : MonoBehaviour {
         // dialogText.Rebuild(CanvasUpdate.PreRender);
         dialogText.ForceMeshUpdate();
         
-        Debug.Log("Final text size: width: " + lineWidth + ", height: " + retval);
+        Debug.Log("Final text size: width: " + lineWidth + ", height: " + lineHeight);
         
-        return retval;
+        return new Vector2Int(lineWidth, lineHeight);
     } // GetDialogTextRows()
+    
+    /// The (width, height) of the dialog box in text characters
+    public Vector2Int dialogTextSize {
+        get { return dialogBoxTextSize; }
+    }
+    // Checking and opening/closing the dialog box
+    public bool dialogBoxOpen {
+        get { return dialogBox.active; }
+        set { dialogBox.SetActive(value); }
+    }
+    // Checking and changing the dialog box text
+    public string dialogBoxText {
+        get { return dialogText.text; }
+        set { dialogText.text = value; }
+    }
    
 }

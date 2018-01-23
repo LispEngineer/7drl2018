@@ -7,24 +7,30 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Test code for the TileManager.
+/// Test code for the TileManager & UIManager.
 /// </summary>
 public class TestTileManager : MonoBehaviour {
 
-	/// The TileManager to run our test code in.
+	/// The managers to run our test code against.
 	public TileManager tileMgr;
-	
-	/// Our text scroller
-	public TextScrollManager messageLog;
+	public UIManager uiMgr;
 	
 	/// Calls our Test setup routine.
 	public void Awake() {
 		Test1();
 	}
+
+	/// Frame updates:
+	/// 1. Check for key commands
+	/// 2. Update UI information as necessary
+	public void Update() {
+		CheckMove();
+		CheckDialog();
+	}
 	
 	/// Implements vi-style Roguelike movement.
 	/// Just moves the camera for now.
-	public void Update() {
+	public void CheckMove() {
 		int dx = 0, dy = 0;
 		
 		if (Input.GetKeyDown(KeyCode.H)) { dx = -1; }
@@ -43,9 +49,22 @@ public class TestTileManager : MonoBehaviour {
 			tileMgr.LookAt(tileMgr.CameraX + dx,
 						   tileMgr.CameraY + dy);
 		
-			messageLog.AddText("Moving: " + dx + "," + dy);
+			uiMgr.messageLog.AddText("Moving: " + dx + "," + dy);
 		}
 	} // Update
+	
+	/// Shows a dialog box with neat text
+	public void CheckDialog() {
+		if (Input.GetKeyDown(KeyCode.I)) {
+			uiMgr.dialogBoxOpen = !uiMgr.dialogBoxOpen;
+		}
+		
+		if (uiMgr.dialogBoxOpen) {
+			// TODO: Only update the text if necessary
+			
+			Vector2Int size = uiMgr.dialogTextSize;
+		}
+	} // CheckDialog
 	
 	/// Sets up a lot of random-ish tiles. 
 	protected void Test1() {
